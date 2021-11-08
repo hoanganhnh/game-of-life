@@ -1,0 +1,58 @@
+.wrapper {
+    position: relative;
+    color: #fff;
+}
+
+.header {
+    height: 54px;
+    background-color: #34495e;
+}
+
+.containerHeader {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.mainHeading {
+    flex: 1;
+    display: flex;
+    align-items: center;
+
+    img {
+        width: 36px;
+        height: 36px;
+        object-fit: cover;
+        margin-right: 12px; 
+        transform: all 0.25s linear;
+
+        &:hover {
+            animation: orbit 2s linear infinite;
+        }
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+}
+
+.btnGruop {
+    flex: 1;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes orbit { 
+    from { transform:rotate(0deg) } 
+    to { transform:rotate(360deg) } 
+}

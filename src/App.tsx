@@ -1,8 +1,16 @@
 import React, { useCallback, useRef, useState } from 'react';
 import produce from 'immer';
 
-const numRows = 25;
-const numCols = 25;
+import { Button } from './components';
+import Icon from './img/icon.svg'
+
+import styles from './App.module.scss'
+
+const TIME_SPEED = 100;
+const SIZE_CELL = 25;
+
+const numRows =  Math.floor((window.innerHeight - 54) /SIZE_CELL);
+const numCols =  Math.floor(window.innerWidth /SIZE_CELL);
 
 const operations = [
   [0, 1],
@@ -66,62 +74,85 @@ function App(): JSX.Element {
       });
     });
 
-    setTimeout(runSimulation, 200);
+    setTimeout(runSimulation, TIME_SPEED);
   }, []);
   
   return (
-    <>
-      <button 
-        onClick={
-          () => {
-            setRunning(!running)
-            if (!running) {
-              runningRef.current = true;
-              runSimulation();
-            }
+    <div className={styles.wrapper}>
+      <header className={styles.header}>
+        <div className={styles.containerHeader}>
+          <div className={styles.mainHeading}>
+            <img src={Icon} alt="Icon" />
+            <h1>Game of Life</h1>
+          </div>
+          <div className={styles.btnGruop}>
+            <Button 
+              content={running ? 'Stop' : 'Start'}
+              onClick={
+                () => {
+                  setRunning(!running) 
+                  if (!running) {
+                    runningRef.current = true;
+                    runSimulation();
+                  }
+                }
+              }
+            />
+            <Button 
+              content="Randon"
+              onClick={() => setGrid(randomGenerateEmptyGrid())}
+            />
+            <Button 
+              content="Reset"
+              onClick={() => {
+                setGrid(generateEmptyGrid())
+                runningRef.current = false;
+                setRunning(false);
+              }}
+            />
+          </div>
+        </div>
+      </header>
+      <div className={styles.grid} style={{marginTop: `${SIZE_CELL / 3}px`}}>
+        <div 
+          style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${numCols}, ${SIZE_CELL}px)`,
+            transition: 'all 0.25s'
+          }}
+        >
+          {
+            grid.map((rows, i) => 
+              rows.map((col, k) => (
+                <div
+                  key={`${i}-${k}`}
+                  onMouseEnter={(e) => {
+                    e.preventDefault();
+                    const newGrids = produce(grid, gridCopy => {
+                      gridCopy[i][k] = grid[i][k] ? 0 : 1;
+                    })
+                    setGrid(newGrids)
+                  }}
+                  onMouseLeave={(e) => {
+                    e.preventDefault();
+                    const newGrids = produce(grid, gridCopy => {
+                      gridCopy[i][k] = grid[i][k] ? 0 : 1;
+                    })
+                    setGrid(newGrids)
+                  }}
+                  
+                  style={{
+                    width: SIZE_CELL,
+                    height: SIZE_CELL,
+                    backgroundColor: grid[i][k] ? "#0c3547" : "#fff",
+                    border: !grid[i][k] ? '0.5px solid #afd8f8' : 'none',
+                  }}
+                />
+            )))
           }
-        }
-      >
-        {running ? 'stop' : 'start'}
-      </button>
-      <button onClick={() => setGrid(randomGenerateEmptyGrid())}>Randdon</button>
-      <button 
-        onClick={() => {
-          setGrid(generateEmptyGrid())
-          runningRef.current = false;
-          setRunning(false);
-        }}
-      >
-        Reset
-      </button>
-      <div className="App" 
-        style={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${numCols}, 20px)`
-        }}
-      >
-        {
-          grid.map((rows, i) => 
-            rows.map((col, k) => (
-              <div
-                key={`${i}-${k}`}
-                onClick={() => {
-                  const newGrids = produce(grid, gridCopy => {
-                    gridCopy[i][k] = grid[i][k] ? 0 : 1;
-                  })
-                  setGrid(newGrids)
-                }}
-                style={{
-                  width: 20,
-                  height: 20,
-                  backgroundColor: grid[i][k] ? "pink" : undefined,
-                  border: '1px solid #000',
-                }}
-              />
-          )))
-        }
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 
