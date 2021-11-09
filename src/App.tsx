@@ -94,15 +94,15 @@ function App(): JSX.Element {
           {
             isMobileDevice ? (
               <>
-                <a 
-                  href="/#" id ="btnHamburger" 
+                <div 
+                  id ="btnHamburger" 
                   className={`${styles.header__toggle} ${toggleBtn ? styles.open : ''}`} 
                   onClick={() => setToggleBtn(!toggleBtn)}
                 >
                   <span></span>
                   <span></span>
                   <span></span>
-                </a>
+                </div>
                 <div className={`${styles.wrapperMenuBtn} ${toggleBtn ? styles.menuMobile : ''} ${toggleBtn ? styles.showMenu : ''}`}>
                   <div className={styles.overlay} onClick={() => setToggleBtn(false)}></div>
                   <div className={styles.guopBtnMobile}>
