@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useState } from 'react';
 import produce from 'immer';
 
 import { Button } from './components';
+import useResize from './hook/useResize'
 import Icon from './img/icon.svg'
 
 import styles from './App.module.scss'
@@ -42,6 +43,9 @@ const randomGenerateEmptyGrid = () => {
 function App(): JSX.Element {
   const [grid, setGrid] = useState(generateEmptyGrid())
   const [running, setRunning] = useState(false)
+  const [toggleBtn, setToggleBtn] = useState(false);
+
+  const sizeDevice = useResize();
 
   const runningRef = useRef(running)
   runningRef.current = running
@@ -76,6 +80,8 @@ function App(): JSX.Element {
 
     setTimeout(runSimulation, TIME_SPEED);
   }, []);
+
+  const isMobileDevice = sizeDevice <= 748
   
   return (
     <div className={styles.wrapper}>
@@ -85,32 +91,79 @@ function App(): JSX.Element {
             <img src={Icon} alt="Icon" />
             <h1>Game of Life</h1>
           </div>
-          <div className={styles.btnGruop}>
-            <Button 
-              content={running ? 'Stop' : 'Start'}
-              onClick={
-                () => {
-                  setRunning(!running) 
-                  if (!running) {
-                    runningRef.current = true;
-                    runSimulation();
+          {
+            isMobileDevice ? (
+              <>
+                <a 
+                  href="/#" id ="btnHamburger" 
+                  className={`${styles.header__toggle} ${toggleBtn ? styles.open : ''}`} 
+                  onClick={() => setToggleBtn(!toggleBtn)}
+                >
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </a>
+                <div className={`${styles.wrapperMenuBtn} ${toggleBtn ? styles.menuMobile : ''} ${toggleBtn ? styles.showMenu : ''}`}>
+                  <div className={styles.overlay} onClick={() => setToggleBtn(false)}></div>
+                  <div className={styles.guopBtnMobile}>
+                    <Button 
+                        content={running ? 'Stop' : 'Start'}
+                        onClick={
+                          () => {
+                            setRunning(!running) 
+                            if (!running) {
+                              runningRef.current = true;
+                              runSimulation();
+                            }
+                          }
+                        }
+                      />
+                      <Button 
+                        content="Randon"
+                        onClick={() => {
+                          setGrid(randomGenerateEmptyGrid());
+                        }}
+                      />
+                      <Button 
+                        content="Reset"
+                        onClick={() => {
+                          setGrid(generateEmptyGrid())
+                          runningRef.current = false;
+                          setRunning(false);
+                        }}
+                      />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className={styles.btnGruop}>
+                <Button 
+                  content={running ? 'Stop' : 'Start'}
+                  onClick={
+                    () => {
+                      setRunning(!running) 
+                      if (!running) {
+                        runningRef.current = true;
+                        runSimulation();
+                      }
+                    }
                   }
-                }
-              }
-            />
-            <Button 
-              content="Randon"
-              onClick={() => setGrid(randomGenerateEmptyGrid())}
-            />
-            <Button 
-              content="Reset"
-              onClick={() => {
-                setGrid(generateEmptyGrid())
-                runningRef.current = false;
-                setRunning(false);
-              }}
-            />
-          </div>
+                />
+                <Button 
+                  content="Randon"
+                  onClick={() => setGrid(randomGenerateEmptyGrid())}
+                />
+                <Button 
+                  content="Reset"
+                  onClick={() => {
+                    setGrid(generateEmptyGrid())
+                    runningRef.current = false;
+                    setRunning(false);
+                  }}
+                />
+              </div>
+            )
+          }
         </div>
       </header>
       <div className={styles.grid} style={{marginTop: `${SIZE_CELL / 3}px`}}>
@@ -135,6 +188,24 @@ function App(): JSX.Element {
                   }}
                   onMouseLeave={(e) => {
                     e.preventDefault();
+                    const newGrids = produce(grid, gridCopy => {
+                      gridCopy[i][k] = grid[i][k] ? 0 : 1;
+                    })
+                    setGrid(newGrids)
+                  }}
+                  onTouchStart={() => {
+                    const newGrids = produce(grid, gridCopy => {
+                      gridCopy[i][k] = grid[i][k] ? 0 : 1;
+                    })
+                    setGrid(newGrids)
+                  }}
+                  onTouchMove={() => {
+                    const newGrids = produce(grid, gridCopy => {
+                      gridCopy[i][k] = grid[i][k] ? 0 : 1;
+                    })
+                    setGrid(newGrids)
+                  }}
+                  onClick={() => {
                     const newGrids = produce(grid, gridCopy => {
                       gridCopy[i][k] = grid[i][k] ? 0 : 1;
                     })

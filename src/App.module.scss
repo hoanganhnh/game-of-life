@@ -1,3 +1,10 @@
+$darkBlue: hsl(233, 26%, 24%);
+$brightCyan: hsl(192, 70%, 51%);
+$grayishBlue: hsl(233, 8%, 62%);
+$lightGrayishBlue: hsl(220, 16%, 96%);
+$veryLightGray: hsl(0, 0%, 98%);
+$white: hsl(0, 0%, 100%);
+
 .wrapper {
     position: relative;
     color: #fff;
@@ -55,4 +62,134 @@
 @keyframes orbit { 
     from { transform:rotate(0deg) } 
     to { transform:rotate(360deg) } 
+}
+/**
+*   @NOTE: responsive ipad -> mobile
+*/
+@media screen and (max-width: 768px) {
+    .wrapper {
+        overflow: hidden;
+    }
+    
+    .containerHeader {
+        padding: 0 24px;
+    }
+
+    .mainHeading {
+       
+        h1 {
+            display: none;
+        }
+    }
+
+    .wrapperMenuBtn {
+        position: relative;
+    }
+
+    .header__toggle {
+        display: block;
+        z-index: 1;
+        > span {
+            display: block;
+            width: 32px;
+            height: 3px;
+            background-color: #fff;
+            transition: all 0.3s ease;
+            transform-origin: 3px 1px;
+
+            &:not(:last-child) {
+                margin-bottom: 7px;
+            }
+        }
+
+    }
+
+    .open {
+        
+        > span:first-child {
+            transform: rotate(48deg);
+        }
+
+        > span:nth-child(2) {
+            opacity: 0;
+        }
+
+        > span:last-child {
+            transform: rotate(-48deg);
+        }
+
+    }
+
+    .menuMobile {
+        position: fixed;
+        top: 54px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 99;
+    }
+
+    .guopBtnMobile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        // justify-content: center;
+
+        cursor: pointer;
+        overflow: hidden;
+        position: absolute;
+        top: 54px;
+        bottom: 0;
+        right: 0;
+        width: 70%;
+
+        background: linear-gradient($darkBlue, $grayishBlue);
+        transform: translateX(260px);
+        opacity: 0;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+        transition: transform linear .3s, opacity linear .3s;
+
+        > button {
+
+            &:not(:last-child) {
+                margin-bottom: 24px;
+            }
+
+            &:first-child {
+                margin-top: 16px;
+            }
+        }
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.6);
+        display: none;
+        animation: faceIn 0.25s linear;
+    }
+
+    .showMenu {
+        .overlay {
+           display: block;
+        }
+        .guopBtnMobile {
+           transform: translateX(0);
+           opacity: 1;
+           top: 0;
+        }
+    }
+
+}
+
+@keyframes faceIn {
+    from {
+       opacity: 0;
+    }
+    to {
+       opacity: 1;
+    }
 }
