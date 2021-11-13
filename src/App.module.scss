@@ -33,7 +33,7 @@ $white: hsl(0, 0%, 100%);
         width: 36px;
         height: 36px;
         object-fit: cover;
-        margin-right: 12px; 
+        margin-right: 12px;
         transform: all 0.25s linear;
 
         &:hover {
@@ -59,9 +59,13 @@ $white: hsl(0, 0%, 100%);
     align-items: center;
 }
 
-@keyframes orbit { 
-    from { transform:rotate(0deg) } 
-    to { transform:rotate(360deg) } 
+@keyframes orbit {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 /**
 *   @NOTE: responsive ipad -> mobile
@@ -70,13 +74,12 @@ $white: hsl(0, 0%, 100%);
     .wrapper {
         overflow: hidden;
     }
-    
+
     .containerHeader {
         padding: 0 24px;
     }
 
     .mainHeading {
-       
         h1 {
             display: none;
         }
@@ -101,11 +104,9 @@ $white: hsl(0, 0%, 100%);
                 margin-bottom: 7px;
             }
         }
-
     }
 
     .open {
-        
         > span:first-child {
             transform: rotate(48deg);
         }
@@ -117,7 +118,6 @@ $white: hsl(0, 0%, 100%);
         > span:last-child {
             transform: rotate(-48deg);
         }
-
     }
 
     .menuMobile {
@@ -146,11 +146,12 @@ $white: hsl(0, 0%, 100%);
         background: linear-gradient($darkBlue, $grayishBlue);
         transform: translateX(260px);
         opacity: 0;
-        box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
-        transition: transform linear .3s, opacity linear .3s;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+            rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+            rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+        transition: transform linear 0.3s, opacity linear 0.3s;
 
         > button {
-
             &:not(:last-child) {
                 margin-bottom: 24px;
             }
@@ -174,22 +175,208 @@ $white: hsl(0, 0%, 100%);
 
     .showMenu {
         .overlay {
-           display: block;
+            display: block;
         }
         .guopBtnMobile {
-           transform: translateX(0);
-           opacity: 1;
-           top: 0;
+            transform: translateX(0);
+            opacity: 1;
+            top: 0;
         }
     }
-
 }
 
 @keyframes faceIn {
     from {
-       opacity: 0;
+        opacity: 0;
     }
     to {
-       opacity: 1;
+        opacity: 1;
     }
+}
+// popup
+.containerGuide {
+    position: fixed;
+    inset: 0px;
+    z-index: 10010;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+}
+
+.overlay {
+    position: absolute;
+    z-index: -1;
+    inset: 0px;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.mainGuideLayout {
+    overflow: hidden;
+    display: block;
+    position: relative;
+    width: 472px;
+    height: calc(100% - 64px);
+    max-height: 660px;
+    background: rgb(255, 255, 255);
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.closeIcon {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 20;
+    display: inline-flex;
+    cursor: pointer;
+    border-radius: 50%;
+    background: rgba(22, 24, 35, 0.06);
+    transition: all 200ms ease-in-out 0s;
+
+    &:hover {
+        background: rgba(22, 24, 35, 0.1);
+    }
+}
+
+.gruopTitle {
+    background: #fff;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.mainHeaderPopup {
+    height: 48px;
+    font-size: 24px;
+    line-height: 32px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+    padding-bottom: 0;
+
+    width: 100%;
+    padding: 0 20px 90px 22px;
+    color: #fff;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.backIcon {
+    position: absolute;
+    top: 20px;
+    left: 16px;
+    right: 0;
+    width: 24px;
+    height: 24px;
+    z-index: 20;
+    cursor: pointer;
+}
+
+.mainContentPopup {
+    min-height: auto;
+    overflow-y: auto;
+    padding: 0 48px 64px;
+    flex: 1;
+    background-color: #fff;
+    margin: 0 auto;
+    box-sizing: border-box;
+    position: relative;
+    max-width: 472px;
+    width: 100%;
+}
+
+.wrapperContent {
+    width: 100%;
+    font-size: 14px;
+    color: #161823;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.guideContainer {
+    max-height: calc((100vh - 70px) - 60px);
+    margin-top: 0;
+    padding-top: 0;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: 320px;
+    margin: 0 auto 12px;
+}
+
+.mainTitleContainer {
+    flex: 0 1 auto;
+}
+
+.mainTitle {
+    font-size: 24px;
+    line-height: 32px;
+    text-align: center;
+    font-weight: bolder;
+}
+
+.listContainer {
+    margin: 32px auto auto;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.itemGuide {
+    width: 100%;
+    min-height: 46px;
+    border: 1px solid rgba(22, 24, 35, 0.12);
+    box-sizing: border-box;
+    border-radius: 2 px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    padding: 0 1px 0 0;
+    cursor: pointer;
+}
+
+.itemGuideIconContainer {
+    width: 44px;
+    height: 44px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid rgba(22, 24, 35, 0.12);
+}
+
+.iconGuideItem {
+    width: 24px;
+    min-height: 24px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.itemName {
+    word-break: break-word;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    text-align: center;
+    font-size: 15px;
+    color: #161823;
+    font-weight: 600;
 }

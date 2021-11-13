@@ -4,6 +4,11 @@ import produce from 'immer';
 import { Button } from './components';
 import useResize from './hook/useResize'
 import Icon from './img/icon.svg'
+import CloseIcon from './img/close_gray.svg'
+import BackIcon from './img/back_modal.svg'
+import LifeBlockIcon from './img/Game_of_life_block_with_border.png'
+import LifeBlinkerIcon from './img/Game_of_life_blinker.gif'
+import LifeAnimatedGkiderIcon from './img/Game_of_life_animated_glider.gif'
 
 import styles from './App.module.scss'
 
@@ -41,9 +46,10 @@ const randomGenerateEmptyGrid = () => {
 }
 
 function App(): JSX.Element {
-  const [grid, setGrid] = useState(generateEmptyGrid())
-  const [running, setRunning] = useState(false)
-  const [toggleBtn, setToggleBtn] = useState(false);
+  const [grid, setGrid] = useState<number[][]>(generateEmptyGrid())
+  const [running, setRunning] = useState<boolean>(false)
+  const [toggleBtn, setToggleBtn] = useState<boolean>(false);
+  const [showPopupGuide, setShowPopupGuide] = useState<boolean>()
 
   const sizeDevice = useResize();
 
@@ -81,7 +87,32 @@ function App(): JSX.Element {
     setTimeout(runSimulation, TIME_SPEED);
   }, []);
 
-  const isMobileDevice = sizeDevice <= 748
+  const isMobileDevice: boolean = sizeDevice <= 748
+
+  const handleToggleStopStart = (): void => {
+    setRunning(!running);
+    if (!running) {
+      runningRef.current = true;
+      runSimulation();
+    }
+  }
+
+  const handleRandomCell = () : void => {
+    setGrid(randomGenerateEmptyGrid());
+  }
+
+  const handleReset = (): void => {
+    setGrid(generateEmptyGrid())
+    runningRef.current = false;
+    setRunning(false);
+  }
+
+  const onCreateCell = (i: number, k: number): void => {
+    const newGrids = produce(grid, gridCopy => {
+      gridCopy[i][k] = grid[i][k] ? 0 : 1;
+    })
+    setGrid(newGrids)
+  }
   
   return (
     <div className={styles.wrapper}>
@@ -108,28 +139,20 @@ function App(): JSX.Element {
                   <div className={styles.guopBtnMobile}>
                     <Button 
                         content={running ? 'Stop' : 'Start'}
-                        onClick={
-                          () => {
-                            setRunning(!running) 
-                            if (!running) {
-                              runningRef.current = true;
-                              runSimulation();
-                            }
-                          }
-                        }
+                        onClick={handleToggleStopStart}
                       />
                       <Button 
                         content="Randon"
-                        onClick={() => {
-                          setGrid(randomGenerateEmptyGrid());
-                        }}
+                        onClick={handleRandomCell}
                       />
                       <Button 
                         content="Reset"
+                        onClick={handleReset}
+                      />
+                      <Button 
+                        content="Guide"
                         onClick={() => {
-                          setGrid(generateEmptyGrid())
-                          runningRef.current = false;
-                          setRunning(false);
+                          setShowPopupGuide(true)
                         }}
                       />
                   </div>
@@ -139,26 +162,21 @@ function App(): JSX.Element {
               <div className={styles.btnGruop}>
                 <Button 
                   content={running ? 'Stop' : 'Start'}
-                  onClick={
-                    () => {
-                      setRunning(!running) 
-                      if (!running) {
-                        runningRef.current = true;
-                        runSimulation();
-                      }
-                    }
+                  onClick={handleToggleStopStart
                   }
                 />
                 <Button 
                   content="Randon"
-                  onClick={() => setGrid(randomGenerateEmptyGrid())}
+                  onClick={handleRandomCell}
                 />
                 <Button 
                   content="Reset"
+                  onClick={handleReset}
+                />
+                <Button 
+                  content="Guide"
                   onClick={() => {
-                    setGrid(generateEmptyGrid())
-                    runningRef.current = false;
-                    setRunning(false);
+                    setShowPopupGuide(true)
                   }}
                 />
               </div>
@@ -179,38 +197,10 @@ function App(): JSX.Element {
               rows.map((col, k) => (
                 <div
                   key={`${i}-${k}`}
-                  onMouseEnter={(e) => {
-                    e.preventDefault();
-                    const newGrids = produce(grid, gridCopy => {
-                      gridCopy[i][k] = grid[i][k] ? 0 : 1;
-                    })
-                    setGrid(newGrids)
-                  }}
-                  onMouseLeave={(e) => {
-                    e.preventDefault();
-                    const newGrids = produce(grid, gridCopy => {
-                      gridCopy[i][k] = grid[i][k] ? 0 : 1;
-                    })
-                    setGrid(newGrids)
-                  }}
-                  onTouchStart={() => {
-                    const newGrids = produce(grid, gridCopy => {
-                      gridCopy[i][k] = grid[i][k] ? 0 : 1;
-                    })
-                    setGrid(newGrids)
-                  }}
-                  onTouchMove={() => {
-                    const newGrids = produce(grid, gridCopy => {
-                      gridCopy[i][k] = grid[i][k] ? 0 : 1;
-                    })
-                    setGrid(newGrids)
-                  }}
-                  onClick={() => {
-                    const newGrids = produce(grid, gridCopy => {
-                      gridCopy[i][k] = grid[i][k] ? 0 : 1;
-                    })
-                    setGrid(newGrids)
-                  }}
+                  onMouseEnter={() => onCreateCell(i, k)}
+                  onTouchStart={() => onCreateCell(i, k)}
+                  onTouchMove={() => onCreateCell(i, k)}
+                  onClick={() => onCreateCell(i, k)}
                   
                   style={{
                     width: SIZE_CELL,
@@ -223,6 +213,48 @@ function App(): JSX.Element {
           }
         </div>
       </div>
+      {showPopupGuide && (
+        <div className={styles.containerGuide}>
+          <div className={styles.mainGuideLayout}>
+            <img onClick={() => setShowPopupGuide(false)} className={styles.closeIcon} src={CloseIcon} alt="CloseIcon" width="32" height="32"/>
+            <div className={styles.gruopTitle}>
+              <div className={styles.mainHeaderPopup}>
+                <div className={styles.backIcon} style={{ backgroundImage: `url(${BackIcon})`}} />
+              </div>
+              <div className={styles.mainContentPopup}>
+                <div className={styles.wrapperContent}>
+                  <div className={styles.guideContainer}>
+                    <div className={styles.mainTitleContainer}>
+                      <div className={styles.mainTitle}>Guide draw</div>
+                    </div>
+                    <div className={styles.listContainer}>
+                      <div className={styles.itemGuide}>
+                        <div className={styles.itemGuideIconContainer}>
+                          <div className={styles.iconGuideItem} style={{ backgroundImage: `url(${LifeBlockIcon})`}} />
+                        </div>
+                        <div className={styles.itemName}>Still lifes</div>
+                      </div>
+                      <div className={styles.itemGuide}>
+                        <div className={styles.itemGuideIconContainer}>
+                          <div className={styles.iconGuideItem} style={{ backgroundImage: `url(${LifeBlinkerIcon})`}} />
+                        </div>
+                        <div className={styles.itemName}>Oscillators</div>
+                      </div>
+                      <div className={styles.itemGuide}>
+                        <div className={styles.itemGuideIconContainer}>
+                          <div className={styles.iconGuideItem} style={{ backgroundImage: `url(${LifeAnimatedGkiderIcon})`}} />
+                        </div>
+                        <div className={styles.itemName}>Spaceships</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className={styles.overlay} onClick={() => setShowPopupGuide(false)} />
+        </div>
+      )}
     </div>
   );
 }
