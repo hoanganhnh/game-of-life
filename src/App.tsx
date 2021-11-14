@@ -1,14 +1,9 @@
 import React, { useCallback, useRef, useState } from 'react';
 import produce from 'immer';
 
-import { Button } from './components';
+import { Button, PopupGuide } from './components';
 import useResize from './hook/useResize'
 import Icon from './img/icon.svg'
-import CloseIcon from './img/close_gray.svg'
-import BackIcon from './img/back_modal.svg'
-import LifeBlockIcon from './img/Game_of_life_block_with_border.png'
-import LifeBlinkerIcon from './img/Game_of_life_blinker.gif'
-import LifeAnimatedGkiderIcon from './img/Game_of_life_animated_glider.gif'
 
 import styles from './App.module.scss'
 
@@ -113,6 +108,10 @@ function App(): JSX.Element {
     })
     setGrid(newGrids)
   }
+
+  const handleClosePopupGuide = (): void => {
+    setShowPopupGuide(false)
+  }
   
   return (
     <div className={styles.wrapper}>
@@ -197,8 +196,6 @@ function App(): JSX.Element {
               rows.map((col, k) => (
                 <div
                   key={`${i}-${k}`}
-                  onMouseEnter={() => onCreateCell(i, k)}
-                  onTouchStart={() => onCreateCell(i, k)}
                   onTouchMove={() => onCreateCell(i, k)}
                   onClick={() => onCreateCell(i, k)}
                   
@@ -214,46 +211,9 @@ function App(): JSX.Element {
         </div>
       </div>
       {showPopupGuide && (
-        <div className={styles.containerGuide}>
-          <div className={styles.mainGuideLayout}>
-            <img onClick={() => setShowPopupGuide(false)} className={styles.closeIcon} src={CloseIcon} alt="CloseIcon" width="32" height="32"/>
-            <div className={styles.gruopTitle}>
-              <div className={styles.mainHeaderPopup}>
-                <div className={styles.backIcon} style={{ backgroundImage: `url(${BackIcon})`}} />
-              </div>
-              <div className={styles.mainContentPopup}>
-                <div className={styles.wrapperContent}>
-                  <div className={styles.guideContainer}>
-                    <div className={styles.mainTitleContainer}>
-                      <div className={styles.mainTitle}>Guide draw</div>
-                    </div>
-                    <div className={styles.listContainer}>
-                      <div className={styles.itemGuide}>
-                        <div className={styles.itemGuideIconContainer}>
-                          <div className={styles.iconGuideItem} style={{ backgroundImage: `url(${LifeBlockIcon})`}} />
-                        </div>
-                        <div className={styles.itemName}>Still lifes</div>
-                      </div>
-                      <div className={styles.itemGuide}>
-                        <div className={styles.itemGuideIconContainer}>
-                          <div className={styles.iconGuideItem} style={{ backgroundImage: `url(${LifeBlinkerIcon})`}} />
-                        </div>
-                        <div className={styles.itemName}>Oscillators</div>
-                      </div>
-                      <div className={styles.itemGuide}>
-                        <div className={styles.itemGuideIconContainer}>
-                          <div className={styles.iconGuideItem} style={{ backgroundImage: `url(${LifeAnimatedGkiderIcon})`}} />
-                        </div>
-                        <div className={styles.itemName}>Spaceships</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className={styles.overlay} onClick={() => setShowPopupGuide(false)} />
-        </div>
+        <PopupGuide 
+          onClosePopupGuide={handleClosePopupGuide}
+        />
       )}
     </div>
   );
