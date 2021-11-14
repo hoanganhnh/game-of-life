@@ -112,6 +112,9 @@ function App(): JSX.Element {
   const handleClosePopupGuide = (): void => {
     setShowPopupGuide(false)
   }
+  const handleShowPopupGuide = (): void => {
+    setShowPopupGuide(true)
+  }
   
   return (
     <div className={styles.wrapper}>
@@ -150,9 +153,7 @@ function App(): JSX.Element {
                       />
                       <Button 
                         content="Guide"
-                        onClick={() => {
-                          setShowPopupGuide(true)
-                        }}
+                        onClick={handleShowPopupGuide}
                       />
                   </div>
                 </div>
@@ -174,9 +175,7 @@ function App(): JSX.Element {
                 />
                 <Button 
                   content="Guide"
-                  onClick={() => {
-                    setShowPopupGuide(true)
-                  }}
+                  onClick={handleShowPopupGuide}
                 />
               </div>
             )
